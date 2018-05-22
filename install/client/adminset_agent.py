@@ -11,7 +11,7 @@ import json
 import threading
 
 token = 'HPcWR7l4NJNJ'
-server_ip = '10.45.59.248'
+server_ip = '10.45.59.248:18000'
 
 try:
     import psutil
