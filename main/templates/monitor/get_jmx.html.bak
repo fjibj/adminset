@@ -1,0 +1,144 @@
+{% for a in apps %}
+<script type="text/javascript">
+/*
+data格式：
+{
+	"app_name": app_name1,
+	"app_value": [
+					{
+							"item_name": item1
+							"data_time":[......],
+							"data_value":[.......]
+					},
+					{
+							"item_name": item2
+							"data_time":[......],
+							"data_value":[.......]
+					},
+					......
+			   ]
+ }
+*/
+var app{{ a.applicationid }} = echarts.init(document.getElementById("app{{ a.applicationid }}"));
+app{{ a.applicationid }}.showLoading();
+setInterval(function () {
+$.get("/monitor/get/jmx/{{ hostid }}/{{ a.applicationid }}/{{ a.name }}/"+timing).done(function (data) {
+    var data = JSON.parse(data);
+
+    app{{ a.applicationid }}.hideLoading();// 加载动画
+
+	//构造option
+    var option = {
+		title: {
+            text: data.app_name,
+			textStyle: {
+                fontWeight: 'normal',              //标题颜色
+                color: '#FFFFE0'
+            },
+        },
+        toolbox: {
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                saveAsImage : {show: true}
+            }
+        },
+        tooltip: {
+            trigger: 'axis',
+        },
+        legend: {
+			type: 'scroll',
+			orient: 'vertical',
+			left: 'right',
+            data:(function (){
+				var legend_data = [];
+				for (var i=0; i<data.app_value.length; i++)
+				{
+					var obj = {
+						name: data.app_value[i].item_name,
+						textStyle:{color:"#25c36c"}
+					};
+					legend_data.push(obj);
+				}
+				return legend_data;
+			})()
+        },
+        xAxis: {
+            boundaryGap: false,
+            data: (function() {
+				for (var i=0; i<data.app_value.length; i++)
+				{
+					if (data.app_value[i].data_time && data.app_value[i].data_time.length > 0)
+					{
+						return data.app_value[i].data_time
+					}
+				}
+			})(),
+			//设置坐标轴字体颜色和宽度
+            axisLine:{
+                lineStyle:{
+                    color:'#FFFACD',
+                    width:2
+                }
+            },
+        },
+        yAxis: [{
+                type : 'value',
+				/*
+                axisLabel : {
+                    formatter : function (value) {
+                        if (value*8 < 1000) {
+                            var res = value*8+'Kb';
+                            return res
+                        }
+                        else if ( value*8 > 1000*1000 ) {
+                            res = Math.round(value/1000*8/1024)+"Gb";
+                            return res
+                        }
+                        else {
+                            res = Math.round(value/1000*8)+"Mb";
+                            return res
+                        }
+                    }                    
+                },
+				*/
+				//设置坐标轴字体颜色和宽度
+				axisLine:{
+					lineStyle:{
+						color:'#FFFACD',
+						width:2
+					}
+				},
+        }],
+        series: (function (){
+			var seriesarray = [];
+      var colorray = ["#FFF68F","#FF4500","#FF34B3","#C1FFC1","#C0FF3E","#BCD2EE","#C71585","#27408B","#7FFF00","#E0FFFF","#8E388E","#0000AA"];
+			for (var i=0; i<data.app_value.length; i++)
+			{
+				var obj = {
+					boundaryGap: false,
+					name: data.app_value[i].item_name,
+					smooth:true,
+					type: 'line',
+					itemStyle: {
+						normal: {
+							color:colorray[i],
+							lineStyle: {
+								color: colorray[i]
+							}
+						}
+					},
+					data: data.app_value[i].data_value
+				};
+				seriesarray.push(obj);
+			}
+			return seriesarray;
+		})()
+
+	}
+
+    app{{ a.applicationid }}.setOption(option);
+});
+}, 10000);
+</script>
+{% endfor %}

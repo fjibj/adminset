@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>	
+	<link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/jqueryui/1.9.2/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="/elfinder/static/elfinder/css/elfinder.min.css">
+	<!-- jQuery 2.2.3 -->
+	<script src="/static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<!-- jQuery UI 1.11.4 -->
+	<script src="/static/plugins/jquery-ui/jquery-ui.min.js"></script>
+	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+	<script>
+	  $.widget.bridge('uibutton', $.ui.button);
+	</script>
+
+	<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+	<script src="/elfinder/static/elfinder/js/elfinder.min.js"></script>	
+</head>
+<body>
+<form class="form-horizontal" action="{% url 'asset_sftp' ids %}" method="POST">
+                        {% csrf_token %}
+<div>
+{{ obj.hostname }}-{{ obj.ip }} <button type="button" onclick="closeElfinder()">Close</button>
+</div>
+<div id="elfinder"></div>
+</form>
+<script type="text/javascript">
+	//alert(hostname);
+	//$().ready(function() {
+	var elf = $('#elfinder').elfinder({
+			resizable: false,
+			height: '100%',
+			url : '/elfinder/yawd-connector/sftp/{{ obj.hostname }}/',
+			lang: 'en'                    
+		}).elfinder('instance');
+		
+	//});
+
+	function closeElfinder() {
+		if(elf) elf.destroy();
+		elf = null;
+		var index = parent.layer.getFrameIndex(window.name); 
+        parent.layer.close(index);
+	}
+</script>
+</body>
+</html>
