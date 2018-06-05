@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from accounts.models import UserInfo, RoleList, PermissionList
 from forms import AssetForm
 from models import Host, Idc, HostGroup, ASSET_STATUS, ASSET_TYPE
 from django.shortcuts import render, HttpResponse
@@ -22,6 +22,7 @@ sys.setdefaultencoding('utf8')
 def asset(request):
     temp_name = "cmdb/cmdb-header.html"
     webssh_domain = get_dir("webssh_domain")
+    is_superuser = "Y"
     asset_find = []
     idc_info = Idc.objects.all()
     host_list = Host.objects.all()
@@ -30,6 +31,11 @@ def asset(request):
     asset_status = ASSET_STATUS
     idc_name = request.GET.get('idc', '')
     group_name = request.GET.get('group', '')
+    if not group_name:
+        group_name = get_user_groupname(request)
+        if group_name:
+            is_superuser = "N"
+            group_info = HostGroup.objects.filter(name=group_name)
     asset_type = request.GET.get('asset_type', '')
     status = request.GET.get('status', '')
     keyword = request.GET.get('keyword', '')
@@ -75,6 +81,29 @@ def asset(request):
         return response
     assets_list, p, assets, page_range, current_page, show_first, show_end = pages(asset_find, request)
     return render(request, 'cmdb/index.html', locals())
+
+
+#获得用户管理的主机组
+def get_user_groupname(request):
+	group_name = None
+	iUser = UserInfo.objects.get(username=request.user)
+	# 判断用户如果是超级管理员则跳过
+	if not iUser.is_superuser:
+		role_permission = RoleList.objects.get(name=iUser.role)
+		role_permission_list = role_permission.permission.all()
+
+		for x in role_permission_list:
+			# 找到"资产管理"权限对应的URL,从中分解出对应的主机组名称
+			if x.url.startswith("/cmdb/asset/"):
+				str = x.url
+				group_name = str[str.find("?group=")+7:]
+				break
+			else:
+				pass
+	else:
+		pass
+
+	return group_name
 
 
 def create_asset_excel(export, asset_id_all):
@@ -145,10 +174,17 @@ def create_asset_excel(export, asset_id_all):
 @permission_verify()
 def asset_add(request):
     temp_name = "cmdb/cmdb-header.html"
+    group_name = get_user_groupname(request)
     if request.method == "POST":
         a_form = AssetForm(request.POST)
         if a_form.is_valid():
-            a_form.save()
+            if group_name:
+                groups = HostGroup.objects.filter(name=group_name)
+                new_host = a_form.save(commit=False)
+                new_host.group = groups[0]
+                new_host.save()
+            else:
+                a_form.save()
             tips = u"增加成功！"
             display_control = ""
         else:
@@ -157,7 +193,12 @@ def asset_add(request):
         return render(request, "cmdb/asset_add.html", locals())
     else:
         display_control = "none"
-        a_form = AssetForm()
+        if group_name:
+            groups = HostGroup.objects.filter(name=group_name)
+            if len(groups):
+                a_form = AssetForm(initial={'group': groups[0].id})
+        else:
+            a_form = AssetForm()
         return render(request, "cmdb/asset_add.html", locals())
 
 
@@ -186,7 +227,33 @@ def asset_edit(request, ids):
     status = 0
     asset_types = ASSET_TYPE
     obj = get_object(Host, id=ids)
+    group_name = get_user_groupname(request)
+    if request.method == 'POST':
+        af = AssetForm(request.POST, instance=obj)
+        if af.is_valid():
+            if group_name:
+                groups = HostGroup.objects.filter(name=group_name)
+                new_host = af.save(commit=False)
+                new_host.group = groups[0]
+                new_host.save()
+            else:
+                af.save()
+            status = 1
+        else:
+            status = 2
+    else:
+        af = AssetForm(instance=obj)
 
+    return render(request, 'cmdb/asset_edit.html', locals())
+
+
+@login_required
+@permission_verify()
+def asset_sftp(request, ids):
+    #status = 0
+    asset_types = ASSET_TYPE
+    obj = get_object(Host, id=ids)
+    """
     if request.method == 'POST':
         af = AssetForm(request.POST, instance=obj)
         if af.is_valid():
@@ -196,5 +263,5 @@ def asset_edit(request, ids):
             status = 2
     else:
         af = AssetForm(instance=obj)
-
-    return render(request, 'cmdb/asset_edit.html', locals())
+    """
+    return render(request, 'cmdb/asset_sftp.html', locals())
