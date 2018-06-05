@@ -65,6 +65,14 @@
 <input id="handle_status" value="" hidden="hidden">
 
 <script>
+//非超级用户不允许修改主机组    
+var pp = "{{ group_name }}";
+//alert(pp.length);
+if ( pp != "None" && pp.length > 0 )
+{
+	//alert(1);
+	document.getElementById("id_group").disabled = "true";
+}    
 $('#idc_add').on('click', function(){
     layer.open({
     type: 2,
