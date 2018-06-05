@@ -148,6 +148,12 @@
   </div>
 {#回传参数至父层#}
 <script type="text/javascript">
+        var pp = "{{ group_name }}";
+		//alert(pp);
+		if ( pp != "None" && pp.length > 0 )
+		{
+			document.getElementsByName("group")[0].disabled = "true";
+		}
         var index = parent.layer.getFrameIndex(window.name);
         var success = {{ status }};
         if ( success == '1' ) {
