@@ -3,6 +3,7 @@
 
 import os
 from subprocess import Popen, PIPE
+import urllib2
 import re
 import platform
 import socket
@@ -11,7 +12,7 @@ import json
 import threading
 
 token = 'HPcWR7l4NJNJ'
-server_ip = '10.45.59.248:18000'
+server_ip = '10.45.59.248:18000'  #''122.192.X.XX:18000'公网IP端口
 
 try:
     import psutil
@@ -47,10 +48,14 @@ except ImportError as msg:
     import requests
 
 
-def get_ip():
-    hostname = socket.getfqdn(socket.gethostname())
-    ipaddr = socket.gethostbyname(hostname)
-    return ipaddr
+def get_ip():   
+    #hostname = socket.getfqdn(socket.gethostname())
+    #ipaddr = socket.gethostbyname(hostname)
+    #获取公网IP
+    url = urllib2.urlopen("http://txt.go.sohu.com/ip/soip")
+    text = url.read()
+    ipaddr = re.findall(r'\d+.\d+.\d+.\d+',text)
+    return ipaddr[0]
 
 
 def get_dmi():
