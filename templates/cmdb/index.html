@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load mytags %}
 {% block self_head_css_js %}
     <script src="/static/layer/layer.js"></script>
@@ -67,7 +67,7 @@
                             </label>
 
                             <label>
-                                <select name="group" class="form-control m-b input-sm" onchange="change_info()">
+                                <select id="id_group" name="group" class="form-control m-b input-sm" onchange="change_info()">
                                     <option value="">主机组</option>
                                     {% for asset_group in group_info %}
                                         {% ifequal asset_group.name group_name %}
@@ -149,7 +149,11 @@
                                         <td>{{ host.idc }}</td>
                                         <td class="text-center" data-editable='false'>
                                         <a class="btn btn-sm btn-info" target="_blank" href="http://{{ webssh_domain }}:2222/ssh/host/{{ host.ip }}" class="btn btn-xs btn-info">WebSSH</a>
-                                        <a href="#"><li class="btn btn-sm btn-info" onclick="return tanchu(this.value)" value="{{ host.id }}">编辑</li></a>
+										<a class="btn btn-sm btn-info" target="_blank" href="{% url 'host_info' host.hostname 0 %}" class="btn btn-xs btn-info">监控</a>
+					<a href="#"><li class="btn btn-sm btn-info" onclick="return file_browser(this.value)" value="{{ host.id }}">SFTP</li></a>
+                                    
+					<!-- <a class="btn btn-sm btn-info" target="_blank" href="sftp/{{ host.id }}" class="btn btn-xs btn-info">SFTP</a> -->	
+					<a href="#"><li class="btn btn-sm btn-info" onclick="return tanchu(this.value)" value="{{ host.id }}">编辑</li></a>
                                         <a value="{% url 'asset_del' %}?id={{ host.id }}" class="btn btn-sm btn-danger asset_del">删除</a>
                                     </td>
                                     </tr>
@@ -168,6 +172,13 @@
 <input id="handle_status" value="" hidden="hidden">
 </div>
 <script>
+var issuper = "{{ is_superuser }}";
+//alert(issuper);
+if (issuper=="N")
+{
+	//alert(1);
+	document.getElementById("id_group").disabled = "true";
+}
   $(function () {
     $("#example1").DataTable();
     $('#dataform').DataTable({
@@ -185,6 +196,20 @@ function checkSubmit() {
     if (!confirm("确定删除？")) {
         window.event.returnValue = false;
     }
+}
+</script>
+<script>
+function file_browser(n){
+	layer.open({
+    type: 2,
+    title: '文件管理器',
+    closeBtn: 1,
+	maxmin: true,
+	moveOut: true,
+    area: ['700px', '600px'],
+    shadeClose: true, //点击遮罩关闭
+    content: ['/cmdb/asset/sftp/' + n,],
+  });
 }
 </script>
 <script>

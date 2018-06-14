@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^asset/add/$', asset.asset_add, name='asset_add'),
     url(r'^asset/del/$', asset.asset_del, name='asset_del'),
     url(r'^asset/edit/(?P<ids>\d+)/$', asset.asset_edit, name='asset_edit'),
+    url(r'^asset/sftp/(?P<ids>\d+)/$', asset.asset_sftp, name='asset_sftp'),
     # url(r'^asset/save/$', asset.asset_save, name='asset_save'),
     url(r'^group/$', group.group, name='group'),
     url(r'^group/del/$', group.group_del, name='group_del'),

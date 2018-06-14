@@ -11,6 +11,10 @@
 
     <script>
         window.onload=init;
+        function change_info(){
+            var args = $("#project_form").serialize();
+            window.location = "{% url 'appconf' %}?" + args
+        }
         function init() {
             var box = document.getElementById("appconf");
             box.className="active";
@@ -32,25 +36,59 @@
                 <div class="box-header">
                     <div class="col-sm-2" style="padding-left: 0">
 						 <a href="{% url 'project_add' %}"><li class="btn btn-success" ><b>添加项目</b></li></a>
-                         <a href="#" onclick="return project_export_excel()"><li name="export" class="btn btn-success search-btn-excel"><b>&nbsp;导出&nbsp;</b></li></a>
+            </div>
+		<div class="col-sm-5" style="padding-left: 0px">
+		<label>
+                 <select id="id_product" name="product" class="form-control m-b input-sm" onchange="change_info()">
+                     <option value="">中心列表</option>
+                     {% for product in all_product %}
+                         {% ifequal product.name product_name %}
+                             <option value="{{product.name}}" selected> {{ product.name|slice:":20" }}</option>
+                         {% else %}
+                             <option value="{{product.name}}"> {{ product.name|slice:":20" }}</option>
+                         {% endifequal %}
+                     {% endfor %}
+                 </select>
+             </label>
+             <label>
+                                         <select name="server_type" class="form-control m-b input-sm" onchange="change_info()">
+                                             <option value="">中间件类型</option>
+                                             {% for type in server_types %}
+                                                 {% ifequal type.0|int2str server_type %}
+                                                     <option value="{{ type.0 }}" selected> {{ type.1 }}</option>
+                                                 {% else %}
+                                                     <option value="{{ type.0 }}"> {{ type.1 }}</option>
+                                                 {% endifequal %}
+                                             {% endfor %}
+                                         </select>
+            </label>
+	  </div>
+                    <div class="col-sm-4" style="padding-right: 0;">
+             <a href="#" onclick="return project_export_excel()"><li name="export" class="btn btn-success search-btn-excel"><b>&nbsp;导出&nbsp;</b></li></a>
                     </div>
                     <div id="export"></div>
                 </div>
+
+
 
                 <!-- /.box-header -->
                 <div class="box-body">
                   <table class="table table-striped table-bordered" id="projectform">
                       <thead>
                         <tr>
-                            <th>
+                            <th width="3%">
                                 <input id="checkall" type="checkbox" class="i-checks" name="checkall" value="checkall" data-editable='false' onclick="check_all('project_form')">
                             </th>
-                            <th>项目名称</th>
-                            <th>程序类型</th>
-                            <th>所属产品线</th>
-                            <th>负责人姓名</th>
-                            <th>负责人电话</th>
-                            <th>操作</th>
+                            <th width="10%">项目名称</th>
+                            <th width="9%">所属中心</th>
+                            <th width="10%">负责人姓名</th>
+                            <th width="10%">机器地址</th>
+                            <th width="10%">应用URL</th>
+                            <th width="10%">登录用户名</th>
+                            <th width="8%">登录密码</th>
+                            <th width="10%">服务器类型</th>
+                            <th width="7%">JMX端口</th>
+                            <th width="17%">操作</th>
                         </tr>
                       </thead>
                             <tbody>
@@ -58,11 +96,16 @@
                                 <tr class="even gradeX">
                                     <td><input type="checkbox" id="id" class="i-checks" value="{{ project.id }}" name="id" /></td>
                                     <td>{{ project.name }} </td>
-                                    <td>{{ project.language_type }} </td>
                                     <td>{{ project.product }} </td>
                                     <td>{{ project.owner.name }} </td>
-                                    <td>{{ project.owner.phone }} </td>
+                                    <td>{{ project.source_address }} </td>
+                                    <td><a target="_blank" href="{{ project.app_url }}">{{ project.app_url }}</a> </td>
+                                    <td>{{ project.app_user }} </td>
+                                    <td>{{ project.app_password }} </td>
+                                    <td>{{ project.server_type }} </td>
+                                    <td>{{ project.jmx_port }} </td>
                                     <td>
+                                        <a class="btn btn-sm btn-info" target="_blank" href="{% url 'jmx_info' project.source_address project.jmx_port project.server_type  0 %}" class="btn btn-xs btn-info">监控</a>
                                         <a href="{% url "project_edit" project.id %}"><span class="btn btn-sm btn-info">编辑</span></a>
                                         <a href="{% url "project_del"%}?project_id={{ project.id }}" onclick="return confirm('确认删除项目吗？')"><span class="btn btn-sm btn-danger ">删除</span></a>
                                     </td>
@@ -80,6 +123,13 @@
 
 </div>
 <script>
+var issuper = "{{ is_superuser }}";
+//alert(issuper);
+if (issuper=="N")
+{
+	//alert(1);
+	document.getElementById("id_product").disabled = "true";
+}
   $(function () {
     $('#projectform').DataTable({
       "paging": true,

@@ -148,7 +148,7 @@
   </div>
 {#回传参数至父层#}
 <script type="text/javascript">
-        var pp = "{{ group_name }}";
+		var pp = "{{ group_name }}";
 		//alert(pp);
 		if ( pp != "None" && pp.length > 0 )
 		{
@@ -158,7 +158,7 @@
         var success = {{ status }};
         if ( success == '1' ) {
             parent.$("#handle_status").val('1');
-              parent.layer.close(index);
+            parent.layer.close(index);
         } else if( success == '2' ) {
             parent.$("#handle_status").val('2');
             parent.layer.close(index);

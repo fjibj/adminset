@@ -2,12 +2,17 @@
 var mycpu = echarts.init(document.getElementById('cpu'));
 mycpu.showLoading();
 setInterval(function () {
-$.get("/monitor/get/cpu/{{ hostname }}/"+timing).done(function (data) {
+$.get("/monitor/asset/get/cpu/{{ hostname }}/"+timing).done(function (data) {
+//$.get("{% url 'get_cpu' hostname timing %}").done(function (data) {
     var data = JSON.parse(data);
     mycpu.hideLoading();// 加载动画
     mycpu.setOption({
         title: {
-            text: 'CPU使用率'
+            text: 'CPU使用率',
+            textStyle: {  
+                fontWeight: 'normal',              //标题颜色  
+                color: '#FFFFE0'  
+            }, 
         },
         toolbox: {
             show : true,
@@ -21,28 +26,50 @@ $.get("/monitor/get/cpu/{{ hostname }}/"+timing).done(function (data) {
             trigger: 'axis'
         },
         legend: {
-            data:['CPU']
+            //data:['CPU'],
+            data:[ {name: 'CPU',  
+             textStyle:{color:"#25c36c"}  
+               },  
+          ], 
         },
         xAxis: {
             boundaryGap: false,
-            data: data.data_time
+            data: data.data_time,
+            //设置坐标轴字体颜色和宽度  
+            axisLine:{  
+                lineStyle:{  
+                    color:'#FFFACD',  
+                    width:2  
+                }  
+            }, 
         },
         yAxis: [{
-                type : 'value',
-                axisLabel : {
-                    formatter : '{value} %'
-                },
-                max: 100,
+			type : 'value',
+			axisLabel : {
+				formatter : '{value} %'
+			},
+			max: 100,
+			//设置坐标轴字体颜色和宽度  
+            axisLine:{  
+                lineStyle:{  
+                    color:'#FFFACD',  
+                    width:2  
+                }  
+            }, 
         }],
         series: [{
             boundaryGap: false,
             name: 'CPU',
             smooth:true,
             type: 'line',
-            symbol: 'none',
-            stack: 'a',
-            areaStyle: {
+            //symbol: 'none',
+            //stack: 'a',
+			itemStyle: {
                 normal: {
+                    color:'#FF4500', //自定义折点
+                    areaStyle: {
+                        color: '#FF4500' //自定义线条
+                    }
                 }
             },
             data: data.cpu_percent
@@ -56,12 +83,16 @@ $.get("/monitor/get/cpu/{{ hostname }}/"+timing).done(function (data) {
 var mymemory = echarts.init(document.getElementById('memory'));
 mymemory.showLoading();
 setInterval(function () {
-$.get("/monitor/get/mem/{{ hostname }}/"+timing).done(function (data) {
+$.get("/monitor/asset/get/mem/{{ hostname }}/"+timing).done(function (data) {
     var data = JSON.parse(data);
     mymemory.hideLoading();// 加载动画
     mymemory.setOption({
         title: {
-            text: '内存使用率'
+            text: '内存使用率',
+            textStyle: {  
+                fontWeight: 'normal',              //标题颜色  
+                color: '#FFFFE0'  
+            }, 
         },
         tooltip: {
             trigger: 'axis'
@@ -74,18 +105,36 @@ $.get("/monitor/get/mem/{{ hostname }}/"+timing).done(function (data) {
             }
         },
         legend: {
-            data:['Memory'],
+            //data:['Memory'],
+            data:[ {name: 'Memory',  
+             textStyle:{color:"#25c36c"}  
+               },  
+			], 
         },
         xAxis: {
             boundaryGap: false,
-            data: data.data_time
+            data: data.data_time,
+            //设置坐标轴字体颜色和宽度  
+            axisLine:{  
+                lineStyle:{  
+                    color:'#FFFACD',  
+                    width:2  
+                }  
+            }, 
         },
         yAxis: [{
-                type : 'value',
-                axisLabel : {
-                    formatter : '{value} %'
-                },
-                max: 100
+			type : 'value',
+			axisLabel : {
+				formatter : '{value} %'
+			},
+			max: 100,
+			//设置坐标轴字体颜色和宽度  
+            axisLine:{  
+                lineStyle:{  
+                    color:'#FFFACD',  
+                    width:2  
+                }  
+            }, 
         }],
         series: [{
             boundaryGap: [0, '0%'],
@@ -112,12 +161,16 @@ $.get("/monitor/get/mem/{{ hostname }}/"+timing).done(function (data) {
 var disk{{ p }} = echarts.init(document.getElementById("disk{{ p }}"));
 disk{{ p }}.showLoading();
 setInterval(function () {
-$.get("/monitor/get/disk/{{ hostname }}/"+timing+"/"+{{ p }}).done(function (data) {
+$.get("/monitor/asset/get/disk/{{ hostname }}/"+timing+"/"+{{ p }}).done(function (data) {
     var data = JSON.parse(data);
     disk{{ p }}.hideLoading();// 加载动画
     disk{{ p }}.setOption({
         title: {
-            text: data.disk_name
+            text: data.disk_name,
+			textStyle: {  
+                fontWeight: 'normal',              //标题颜色  
+                color: '#FFFFE0'  
+            }, 
         },
         toolbox: {
             feature : {
@@ -130,18 +183,36 @@ $.get("/monitor/get/disk/{{ hostname }}/"+timing+"/"+{{ p }}).done(function (dat
             trigger: 'axis'
         },
         legend: {
-            data:['Disk']
+            //data:['Disk']
+			data:[ {name: 'Disk',  
+             textStyle:{color:"#25c36c"}  
+               },  
+			], 
         },
         xAxis: {
             boundaryGap: false,
-            data: data.data_time
+            data: data.data_time,
+			//设置坐标轴字体颜色和宽度  
+            axisLine:{  
+                lineStyle:{  
+                    color:'#FFFACD',  
+                    width:2  
+                }  
+            }, 
         },
         yAxis: [{
                 type : 'value',
                 axisLabel : {
                     formatter : '{value} %'
                 },
-                max: 100
+                max: 100,
+				//设置坐标轴字体颜色和宽度  
+				axisLine:{  
+					lineStyle:{  
+						color:'#FFFACD',  
+						width:2  
+					}  
+				}, 
         }],
         series: [{
             boundaryGap: false,
@@ -169,12 +240,16 @@ $.get("/monitor/get/disk/{{ hostname }}/"+timing+"/"+{{ p }}).done(function (dat
 var net{{ nic }} = echarts.init(document.getElementById("net{{ nic }}"));
 net{{ nic }}.showLoading();
 setInterval(function () {
-$.get("/monitor/get/net/{{ hostname }}/"+timing+"/"+{{ nic }}).done(function (data) {
+$.get("/monitor/asset/get/net/{{ hostname }}/"+timing+"/"+{{ nic }}).done(function (data) {
     var data = JSON.parse(data);
     net{{ nic }}.hideLoading();// 加载动画
     net{{ nic }}.setOption({
         title: {
-            text: data.nic_name
+            text: data.nic_name,
+			textStyle: {  
+                fontWeight: 'normal',              //标题颜色  
+                color: '#FFFFE0'  
+            }, 
         },
         toolbox: {
             feature : {
@@ -212,11 +287,24 @@ $.get("/monitor/get/net/{{ hostname }}/"+timing+"/"+{{ nic }}).done(function (da
             }
         },
         legend: {
-            data:['入流量','出流量']
+            //data:['入流量','出流量']
+			data:[ {name: '入流量',  
+             textStyle:{color:"#25c36c"}  
+               }, {name: '出流量',  
+             textStyle:{color:"#25c36c"}  
+               }, 
+			], 
         },
         xAxis: {
             boundaryGap: false,
-            data: data.data_time
+            data: data.data_time,
+			//设置坐标轴字体颜色和宽度  
+            axisLine:{  
+                lineStyle:{  
+                    color:'#FFFACD',  
+                    width:2  
+                }  
+            }, 
         },
         yAxis: [{
                 type : 'value',
@@ -235,7 +323,14 @@ $.get("/monitor/get/net/{{ hostname }}/"+timing+"/"+{{ nic }}).done(function (da
                             return res
                         }
                     }
-                }
+                },
+				//设置坐标轴字体颜色和宽度  
+				axisLine:{  
+					lineStyle:{  
+						color:'#FFFACD',  
+						width:2  
+					}  
+				}, 
         }],
         series: [{
             boundaryGap: false,

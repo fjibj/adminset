@@ -31,7 +31,7 @@ def permission_verify():
                     if request.path == x.url or request.path.rstrip('/') == x.url:
                         matchUrl.append(x.url)
                     # 判断request.path是否以permission表中的某一条url开头
-                    elif request.path.startswith(x.url):
+                    elif request.path.startswith(x.url[0:x.url.rfind('/')]):
                         matchUrl.append(x.url)
                     else:
                         pass

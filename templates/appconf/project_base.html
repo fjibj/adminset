@@ -12,7 +12,7 @@
             var box = document.getElementById("appconf");
             box.className="active";
             var box = document.getElementById("project_list");
-            box.className="active";
+            box.className="active";			
         }
     </script>
 
@@ -52,6 +52,14 @@
 
   </div>
     <script>
+		var pp = "{{ product_name }}";
+		//alert(pp);
+		if (pp.length>0)
+		{
+			document.getElementById("id_product").disabled = "true";
+		}
+			
+	//	}
         var demo1 = $('select[name="serverList"]').bootstrapDualListbox({
               nonSelectedListLabel: '可选择服务器',
               selectedListLabel: '已选择服务器',

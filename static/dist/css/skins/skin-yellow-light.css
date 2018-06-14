@@ -3,7 +3,7 @@
  * ------------
  */
 .skin-yellow-light .main-header .navbar {
-  background-color: #00aeff;
+  background-color: #222222;
 }
 .skin-yellow-light .main-header .navbar .nav > li > a {
   color: #ffffff;
@@ -43,7 +43,7 @@
   }
 }
 .skin-yellow-light .main-header .logo {
-  background-color: #00aeff;
+  background-color: #222222;
   color: #ffffff;
   border-bottom: 0 solid transparent;
 }
@@ -59,11 +59,11 @@
 .skin-yellow-light .wrapper,
 .skin-yellow-light .main-sidebar,
 .skin-yellow-light .left-side {
-  background-color: #f9fafc;
+  background-color: #222222;
 }
 .skin-yellow-light .content-wrapper,
 .skin-yellow-light .main-footer {
-  border-left: 1px solid #d2d6de;
+  border-left: 1px solid #222222;
 }
 .skin-yellow-light .user-panel > .info,
 .skin-yellow-light .user-panel > .info > a {
@@ -85,7 +85,7 @@
 .skin-yellow-light .sidebar-menu > li:hover > a,
 .skin-yellow-light .sidebar-menu > li.active > a {
   color: #000000;
-  background: #f4f4f5;
+  background: #66CDAA;
 }
 .skin-yellow-light .sidebar-menu > li.active {
   border-left-color: #f39c12;
@@ -97,7 +97,7 @@
   background: #f4f4f5;
 }
 .skin-yellow-light .sidebar a {
-  color: #444444;
+  color: #ffffff;
 }
 .skin-yellow-light .sidebar a:hover {
   text-decoration: none;

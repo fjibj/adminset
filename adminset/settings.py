@@ -30,7 +30,7 @@ CELERY_TASK_SERIALIZER = 'json'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'accounts',
     'monitor',
     'appconf',
+    'elfinder',
+    'storages',
     'django_celery_results',
     'django_celery_beat',
     'django.contrib.admin',
@@ -192,3 +194,5 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'accounts.UserInfo'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.sftpstorage.SFTPStorage'

@@ -61,14 +61,14 @@
     http://your_server_ip/cmdb/get/group/?token=your_token&name=all
 
 #启用webssh
-    需要设置域名解析，默认域名为adminset.cn（可以在配置管理页面进行变更）,也可以设置为adminset的IP地址（如10.45.59.248)。  
+    需要设置域名解析，默认域名为adminset.cn（可以在配置管理页面进行变更）
     需要将这个域名做泛解析指向adminset所在的服务器，在本地或公网DNS都行，如果没有可以设置HOSTS解析，但HOSTS不支持泛解析。
     这样做是为了解决webssh启动时区分不同session进行认证而设置。
 
     指向完成后点击资产管理中的webssh按钮会触发域名格式如下：
-    <adminset server ip>:2222/ssh/host/{{ host.ip }}
-    如主机名为cmdb IP为 192.168.47.130，则webssh链接为：  
-    http://10.45.59.248:2222/ssh/host/192.168.47.130
+    {{ host.hostname }}.adminset.cn:2222/ssh/host/{{ host.ip }}
+    如主机名为cmdb IP为 192.168.47.130
+    http://cmdb.adminset.cn:2222/ssh/host/192.168.47.130
     通过此URL进入webssh访问界面，第一次进入时会询问用户名密码，请填写系统对应的用户和密码即可。
 
 
