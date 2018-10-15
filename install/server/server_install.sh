@@ -55,10 +55,10 @@ fi
 case $yum1 in
 	yes|y|Y|YES)
 	    yum install -y epel-release
-		yum install -y gcc expect python-pip python-devel ansible smartmontools dmidecode libselinux-python
+		yum install -y gcc expect python-pip python-devel ansible smartmontools dmidecode libselinux-python openldap-devel
 		;;
 	no|n|N|NO)
-        yum install -y gcc python-pip expect python-devel ansible smartmontools dmidecode libselinux-python
+        yum install -y gcc python-pip expect python-devel ansible smartmontools dmidecode libselinux-python openldap-devel
 		;;
 	*)
 		exit 1
@@ -69,9 +69,12 @@ esac
 echo "build webssh"
 /usr/bin/yum install -y nodejs
 cd $cur_dir/vendor/WebSSH2
-/usr/bin/npm install -g cnpm --registry=https://registry.npm.taobao.org
-/usr/bin/cnpm install --production
-/usr/bin/cnpm install forever -g
+#/usr/bin/npm install -g cnpm --registry=https://registry.npm.taobao.org
+#/usr/bin/cnpm install --production
+#/usr/bin/cnpm install forever -g
+/usr/bin/npm config set registry http://registry.cnpmjs.org
+/usr/bin/npm install --production
+/usr/bin/npm install forever -g
 
 # 分发代码
 if [ ! $cur_dir ] || [ ! $adminset_dir ]
@@ -176,6 +179,7 @@ pip install celery==4.0.2
 pip install billiard==3.5.0.3
 pip install pytz==2017.2
 pip install kombu==4.1.0
+pip install pyzabbix=0.7.4
 cd $adminset_dir/vendor/django-celery-results-master
 python setup.py build
 python setup.py install
